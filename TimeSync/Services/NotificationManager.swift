@@ -43,23 +43,21 @@ class NotificationManager: ObservableObject {
         switch type {
         case .plannedTimeReached:
             content.body = "\(entry.taskName)の予定時間になりました！"
-            if let startTime = entry.startTime ?? nil {
-                let notificationTime = startTime.addingTimeInterval(entry.plannedDuration)
-                trigger = UNCalendarNotificationTrigger(
-                    dateMatching: Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: notificationTime),
-                    repeats: false
-                )
-            }
+            let startTime = entry.startTime
+            let notificationTime = startTime.addingTimeInterval(entry.plannedDuration)
+            trigger = UNCalendarNotificationTrigger(
+                dateMatching: Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: notificationTime),
+                repeats: false
+            )
             
         case .overtime(let overMinutes):
             content.body = "\(entry.taskName)が予定より\(overMinutes)分オーバーしています"
-            if let startTime = entry.startTime ?? nil {
-                let notificationTime = startTime.addingTimeInterval(entry.plannedDuration + TimeInterval(overMinutes * 60))
-                trigger = UNCalendarNotificationTrigger(
-                    dateMatching: Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: notificationTime),
-                    repeats: false
-                )
-            }
+            let startTime = entry.startTime
+            let notificationTime = startTime.addingTimeInterval(entry.plannedDuration + TimeInterval(overMinutes * 60))
+            trigger = UNCalendarNotificationTrigger(
+                dateMatching: Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: notificationTime),
+                repeats: false
+            )
         }
         
         guard let trigger = trigger else { return }
